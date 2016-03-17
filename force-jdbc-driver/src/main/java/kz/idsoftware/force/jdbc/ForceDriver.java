@@ -45,9 +45,8 @@ public class ForceDriver implements java.sql.Driver {
     return false;
   }
 
-  @Override
   public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-    return null;
+    throw new SQLFeatureNotSupportedException();
   }
 
 }
