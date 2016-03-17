@@ -22,7 +22,10 @@ public class ForceDriver implements java.sql.Driver {
    */
   @Override
   public boolean acceptsURL(String url) throws SQLException {
-    return false;
+    if (url==null) {
+      return false;
+    }
+    return url.startsWith("jdbc:force://");
   }
 
   @Override
