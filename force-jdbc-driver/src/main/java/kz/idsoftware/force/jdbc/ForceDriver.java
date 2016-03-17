@@ -11,7 +11,11 @@ public class ForceDriver implements java.sql.Driver {
 
   @Override
   public Connection connect(String url, Properties info) throws SQLException {
-    return null;
+    if (acceptsURL(url)) {
+      return new ForceConnection();
+    } else {
+      throw new SQLException("Wrong url specified");
+    }
   }
 
   /**

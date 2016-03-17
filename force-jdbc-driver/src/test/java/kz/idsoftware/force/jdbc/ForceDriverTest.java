@@ -4,7 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class ForceDriverTest {
 
@@ -25,6 +27,26 @@ public class ForceDriverTest {
 
     // Invalid
     Assert.assertFalse(driver.acceptsURL(null));
+  }
+
+  @Test
+  public void testConnectValid() throws SQLException {
+    Properties properties = new Properties();
+    properties.setProperty("user","user");
+    properties.setProperty("password","password");
+
+    Connection connection = driver.connect("jdbc:force://host",properties);
+
+    Assert.assertNotNull(connection);
+  }
+
+  @Test(expected = SQLException.class)
+  public void testConnectInvalid() throws SQLException {
+    Properties properties = new Properties();
+    properties.setProperty("user","user");
+    properties.setProperty("password","password");
+
+    Connection connection = driver.connect("jdbc:notforce://host",properties);
   }
 
 }
