@@ -9,10 +9,17 @@ import java.util.logging.Logger;
 
 public class ForceDriver implements java.sql.Driver {
 
+  private static final String USER = "user";
+  private static final String PASSWORD = "password";
+  private static final String TOKEN = "token";
+
   @Override
   public Connection connect(String url, Properties info) throws SQLException {
     if (acceptsURL(url)) {
-      return new ForceConnection();
+      String user = info.getProperty(USER);
+      String password = info.getProperty(PASSWORD);
+      String token = info.getProperty(TOKEN);
+      return new ForceConnection(url,user,password,token);
     } else {
       throw new SQLException("Wrong url specified");
     }
