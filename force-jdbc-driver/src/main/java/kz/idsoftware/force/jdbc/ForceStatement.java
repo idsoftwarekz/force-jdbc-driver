@@ -16,6 +16,7 @@ public class ForceStatement implements Statement {
 
   @Override
   public ResultSet executeQuery(String sql) throws SQLException {
+    forceConnection.processForceQuery(sql);
     ForceResultSet rs = new ForceResultSet(forceConnection, sql);
     return rs;
   }
