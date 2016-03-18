@@ -1,5 +1,16 @@
 package kz.idsoftware.force.jdbc;
 
+import com.sforce.soap.partner.CallOptions;
+import com.sforce.soap.partner.InvalidIdFault;
+import com.sforce.soap.partner.Login;
+import com.sforce.soap.partner.LoginFault;
+import com.sforce.soap.partner.LoginResult;
+import com.sforce.soap.partner.LoginScopeHeader;
+import com.sforce.soap.partner.PartnerConnection;
+import com.sforce.soap.partner.PartnerService;
+import com.sforce.soap.partner.UnexpectedErrorFault;
+
+import javax.xml.ws.BindingProvider;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -26,6 +37,8 @@ public class ForceConnection implements Connection {
   private String password;
   private String token;
 
+  private PartnerConnection partnerConnection;
+
   ForceConnection(String url, String user, String password, String token) throws SQLException {
     if (url==null || user==null || password==null || token==null) {
       throw new SQLException("URL, user, password or token parameters must not be null");
@@ -34,11 +47,42 @@ public class ForceConnection implements Connection {
     this.user = user;
     this.password = password;
     this.token = token;
+
+    initializePartnerConnection();
+  }
+
+  private void initializePartnerConnection() throws SQLException {
+    PartnerService service = new PartnerService();
+    partnerConnection = service.getPartnerConnection();
+
+    LoginScopeHeader header = new LoginScopeHeader();
+    header.setOrganizationId("iD Software");
+    header.setPortalId("Salesforce JDBC Open Source Driver");
+
+    CallOptions callOptions = new CallOptions();
+    callOptions.setClient("Salesforce JDBC Open Source Driver");
+    callOptions.setReturnFieldDataTypes(true);
+
+    try {
+      LoginResult loginResult = partnerConnection.login(user, password + token, header, callOptions);
+
+      String serverUrl = loginResult.getServerUrl();
+
+      BindingProvider bp = (BindingProvider) partnerConnection;
+      bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, serverUrl);
+    } catch (LoginFault loginFault) {
+      loginFault.printStackTrace();
+    } catch (InvalidIdFault invalidIdFault) {
+      throw new SQLException(invalidIdFault.getCause());
+    } catch (UnexpectedErrorFault unexpectedErrorFault) {
+      throw new SQLException(unexpectedErrorFault.getCause());
+    }
   }
 
   @Override
   public Statement createStatement() throws SQLException {
-    return null;
+    ForceStatement statement = new ForceStatement(this);
+    return statement;
   }
 
   @Override

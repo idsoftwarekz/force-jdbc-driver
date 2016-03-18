@@ -19,6 +19,11 @@
       <artifactId>force-sql-parser</artifactId>
     </dependency>
     <dependency>
+      <groupId>kz.idsoftware.force.api</groupId>
+      <artifactId>force-partner-api</artifactId>
+      <version>36.0</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
