@@ -34,6 +34,7 @@ public class ForceDriverTest {
     Properties properties = new Properties();
     properties.setProperty("user","user");
     properties.setProperty("password","password");
+    properties.setProperty("token","token");
 
     Connection connection = driver.connect("jdbc:force://host",properties);
 

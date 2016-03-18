@@ -21,6 +21,21 @@ import java.util.concurrent.Executor;
 
 public class ForceConnection implements Connection {
 
+  private String url;
+  private String user;
+  private String password;
+  private String token;
+
+  ForceConnection(String url, String user, String password, String token) throws SQLException {
+    if (url==null || user==null || password==null || token==null) {
+      throw new SQLException("URL, user, password or token parameters must not be null");
+    }
+    this.url = url;
+    this.user = user;
+    this.password = password;
+    this.token = token;
+  }
+
   @Override
   public Statement createStatement() throws SQLException {
     return null;
