@@ -15,13 +15,17 @@ public class ForceDriver implements java.sql.Driver {
 
   @Override
   public Connection connect(String url, Properties info) throws SQLException {
-    if (acceptsURL(url)) {
-      String user = info.getProperty(USER);
-      String password = info.getProperty(PASSWORD);
-      String token = info.getProperty(TOKEN);
-      return new ForceConnection(url,user,password,token);
-    } else {
-      throw new SQLException("Wrong url specified");
+    try {
+      if (acceptsURL(url)) {
+        String user = info.getProperty(USER);
+        String password = info.getProperty(PASSWORD);
+        String token = info.getProperty(TOKEN);
+        return new ForceConnection(url,user,password,token);
+      } else {
+        throw new SQLException("Wrong url specified");
+      }
+    } catch (ForceException e) {
+      throw new SQLException(e);
     }
   }
 

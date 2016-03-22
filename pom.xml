@@ -18,6 +18,7 @@
 
   <modules>
     <module>force-sql-parser</module>
+    <module>force-rest-api</module>
     <module>force-jdbc-driver</module>
   </modules>
 

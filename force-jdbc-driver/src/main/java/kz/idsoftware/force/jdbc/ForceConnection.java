@@ -1,29 +1,5 @@
 package kz.idsoftware.force.jdbc;
 
-import com.sforce.soap.partner.CallOptions;
-import com.sforce.soap.partner.InvalidFieldFault;
-import com.sforce.soap.partner.InvalidIdFault;
-import com.sforce.soap.partner.InvalidQueryLocatorFault;
-import com.sforce.soap.partner.InvalidSObjectFault;
-import com.sforce.soap.partner.LimitInfoHeader;
-import com.sforce.soap.partner.LoginFault;
-import com.sforce.soap.partner.LoginResult;
-import com.sforce.soap.partner.LoginScopeHeader;
-import com.sforce.soap.partner.MalformedQueryFault;
-import com.sforce.soap.partner.MruHeader;
-import com.sforce.soap.partner.PackageVersion;
-import com.sforce.soap.partner.PackageVersionHeader;
-import com.sforce.soap.partner.PartnerConnection;
-import com.sforce.soap.partner.PartnerService;
-import com.sforce.soap.partner.QueryOptions;
-import com.sforce.soap.partner.QueryResult;
-import com.sforce.soap.partner.SessionHeader;
-import com.sforce.soap.partner.UnexpectedErrorFault;
-import kz.idsoftware.force.jdbc.model.ColumnDescription;
-import kz.idsoftware.force.jdbc.model.ColumnValue;
-
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.Holder;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -43,57 +19,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class ForceConnection implements Connection {
+public class ForceConnection extends ForceConnectionBase implements Connection {
 
-  private String url;
-  private String user;
-  private String password;
-  private String token;
-
-  private PartnerConnection partnerConnection;
-  private SessionHeader sessionHeader;
-
-  ForceConnection(String url, String user, String password, String token) throws SQLException {
-    if (url==null || user==null || password==null || token==null) {
-      throw new SQLException("URL, user, password or token parameters must not be null");
-    }
-    this.url = url;
-    this.user = user;
-    this.password = password;
-    this.token = token;
-
-    initializePartnerConnection();
-  }
-
-  private void initializePartnerConnection() throws SQLException {
-    PartnerService service = new PartnerService();
-    partnerConnection = service.getPartnerConnection();
-
-    LoginScopeHeader loginScopeHeader = ForceConnectionUtils.getLoginScopeHeader();
-
-    CallOptions callOptions = ForceConnectionUtils.getCallOptions();
-
-    try {
-      LoginResult loginResult = partnerConnection.login(user, password + token, loginScopeHeader, callOptions);
-
-      String serverUrl = loginResult.getServerUrl();
-
-      BindingProvider bp = (BindingProvider) partnerConnection;
-      bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, serverUrl);
-
-      sessionHeader = new SessionHeader();
-      sessionHeader.setSessionId(loginResult.getSessionId());
-    } catch (LoginFault loginFault) {
-      loginFault.printStackTrace();
-    } catch (InvalidIdFault invalidIdFault) {
-      throw new SQLException(invalidIdFault.getCause());
-    } catch (UnexpectedErrorFault unexpectedErrorFault) {
-      throw new SQLException(unexpectedErrorFault.getCause());
-    }
-  }
-
-  public PartnerConnection getPartnerConnection() {
-    return partnerConnection;
+  ForceConnection(String url, String user, String password, String token) throws ForceException {
+    super(url, user, password, token);
   }
 
   @Override
@@ -360,38 +289,6 @@ public class ForceConnection implements Connection {
   @Override
   public boolean isWrapperFor(Class<?> aClass) throws SQLException {
     return false;
-  }
-
-  public Map<ColumnDescription,ColumnValue> processForceQuery(String sql) throws SQLException {
-    try {
-      QueryOptions queryOptions = ForceConnectionUtils.getQueryOptions();
-      MruHeader mruHeader = ForceConnectionUtils.getMruHeader();
-      PackageVersionHeader packageVersionHeader = ForceConnectionUtils.getPackageVersionHeader();
-      Holder<LimitInfoHeader> limitInfoHeaderHolder = new Holder<LimitInfoHeader>();
-
-      QueryResult queryResult = partnerConnection.query(
-              sql,
-              sessionHeader,
-              ForceConnectionUtils.getCallOptions(),
-              queryOptions,
-              mruHeader,
-              packageVersionHeader,
-              limitInfoHeaderHolder);
-
-      return ForceConnectionUtils.getResultSetFromQueryResult(queryResult);
-    } catch (MalformedQueryFault malformedQueryFault) {
-      throw new SQLException(malformedQueryFault.getCause());
-    } catch (InvalidIdFault invalidIdFault) {
-      throw new SQLException(invalidIdFault.getCause());
-    } catch (UnexpectedErrorFault unexpectedErrorFault) {
-      throw new SQLException(unexpectedErrorFault.getCause());
-    } catch (InvalidQueryLocatorFault invalidQueryLocatorFault) {
-      throw new SQLException(invalidQueryLocatorFault.getCause());
-    } catch (InvalidFieldFault invalidFieldFault) {
-      throw new SQLException(invalidFieldFault.getCause());
-    } catch (InvalidSObjectFault invalidSObjectFault) {
-      throw new SQLException(invalidSObjectFault.getCause());
-    }
   }
 
 }

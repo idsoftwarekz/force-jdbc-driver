@@ -2,6 +2,7 @@ package kz.idsoftware.force.jdbc;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -9,6 +10,11 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class ForceDriverTest {
+
+  String user = "marat@kalibek.kz";
+  String password = "HelloWorld123$%";
+  String token = "SreaE7lu6BeKdYlJbx9cU7hZ";
+  String url = "https://login.salesforce.com/services/Soap/u/36.0";
 
   private java.sql.Driver driver;
 
@@ -32,9 +38,9 @@ public class ForceDriverTest {
   @Test
   public void testConnectValid() throws SQLException {
     Properties properties = new Properties();
-    properties.setProperty("user","user");
-    properties.setProperty("password","password");
-    properties.setProperty("token","token");
+    properties.setProperty("user",user);
+    properties.setProperty("password",password);
+    properties.setProperty("token",token);
 
     Connection connection = driver.connect("jdbc:force://host",properties);
 
@@ -44,8 +50,8 @@ public class ForceDriverTest {
   @Test(expected = SQLException.class)
   public void testConnectInvalid() throws SQLException {
     Properties properties = new Properties();
-    properties.setProperty("user","user");
-    properties.setProperty("password","password");
+    properties.setProperty("user",user);
+    properties.setProperty("password",password);
 
     Connection connection = driver.connect("jdbc:notforce://host",properties);
   }

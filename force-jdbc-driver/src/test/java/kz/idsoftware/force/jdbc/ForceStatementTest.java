@@ -1,5 +1,7 @@
 package kz.idsoftware.force.jdbc;
 
+import kz.idsoftware.force.jdbc.model.ColumnDescription;
+import kz.idsoftware.force.jdbc.model.ColumnValue;
 import org.easymock.EasyMock;
 import org.easymock.Mock;
 import org.junit.Assert;
@@ -21,7 +23,7 @@ public class ForceStatementTest extends AbstractForceTest {
 
   @Test
   public void testExecuteQuery() throws SQLException {
-    EasyMock.expect(forceConnection.processForceQuery("SELECT Id FROM Account")).andReturn(new HashMap<String,String>()).times(1);
+    EasyMock.expect(forceConnection.processForceQuery("SELECT Id FROM Account")).andReturn(new HashMap<ColumnDescription,ColumnValue>()).times(1);
 
     EasyMock.replay(forceConnection);
 

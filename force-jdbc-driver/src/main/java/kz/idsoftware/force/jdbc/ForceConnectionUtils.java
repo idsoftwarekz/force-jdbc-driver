@@ -7,6 +7,7 @@ import com.sforce.soap.partner.PackageVersion;
 import com.sforce.soap.partner.PackageVersionHeader;
 import com.sforce.soap.partner.QueryOptions;
 import com.sforce.soap.partner.QueryResult;
+import com.sforce.soap.partner.SessionHeader;
 import kz.idsoftware.force.jdbc.model.ColumnDescription;
 import kz.idsoftware.force.jdbc.model.ColumnValue;
 
@@ -17,7 +18,7 @@ public class ForceConnectionUtils {
   public static CallOptions getCallOptions() {
     CallOptions callOptions = new CallOptions();
     callOptions.setClient("Open Source Salesforce JDBC Driver");
-    callOptions.setReturnFieldDataTypes(true);
+//    callOptions.setReturnFieldDataTypes(false);
 
     return callOptions;
   }
@@ -37,7 +38,7 @@ public class ForceConnectionUtils {
   public static PackageVersionHeader getPackageVersionHeader() {
     PackageVersionHeader packageVersionHeader = new PackageVersionHeader();
     PackageVersion packageVersion = new PackageVersion();
-    packageVersion.setMajorNumber(21);
+    packageVersion.setMajorNumber(36);
     packageVersion.setMinorNumber(36);
     packageVersionHeader.getPackageVersions().add(packageVersion);
     return packageVersionHeader;
@@ -49,9 +50,14 @@ public class ForceConnectionUtils {
 
   public static LoginScopeHeader getLoginScopeHeader() {
     LoginScopeHeader loginScopeHeader = new LoginScopeHeader();
-    loginScopeHeader.setOrganizationId("iD Software");
-    loginScopeHeader.setPortalId("Salesforce JDBC Open Source Driver");
+//    loginScopeHeader.setOrganizationId("iD Software");
+//    loginScopeHeader.setPortalId("Salesforce JDBC Open Source Driver");
     return loginScopeHeader;
   }
 
+  public static SessionHeader getSessionHeader(String sessionId) {
+    SessionHeader sessionHeader = new SessionHeader();
+    sessionHeader.setSessionId(sessionId);
+    return sessionHeader;
+  }
 }

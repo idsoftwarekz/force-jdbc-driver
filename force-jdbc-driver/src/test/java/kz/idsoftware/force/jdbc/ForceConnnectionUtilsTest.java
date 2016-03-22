@@ -14,7 +14,6 @@ public class ForceConnnectionUtilsTest {
 
     List<SObject> records = new LinkedList<SObject>();
     SObject obj = new SObject();
-    obj
     obj.getAny();
 
     EasyMock.expect(queryResult.getRecords()).andReturn(records);
