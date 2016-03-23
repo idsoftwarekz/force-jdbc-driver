@@ -19,6 +19,8 @@ public class ForceDriverTest {
 
   @Test
   public void testAcceptsURL() throws SQLException {
+    System.out.println("HELLO WORLD => "+System.getenv("FORCE_URL"));
+
     // Valid
     Assert.assertTrue(driver.acceptsURL("jdbc:force://somehost"));
 
