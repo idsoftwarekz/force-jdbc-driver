@@ -29,13 +29,16 @@ public class ForceConnectionBase {
   public ForceConnectionBase(String url, String user, String password, String token) throws ForceException {
     try {
       PartnerConnectionBuilder builder = new PartnerConnectionBuilder();
-      partnerConnection = builder
-              .url(url)
+      builder = builder
+//              .url(url)
+              .url("https://login.salesforce.com/services/Soap/u/36.0")
               .user(user)
               .password(password)
-              .token(token)
-              .forceConnectionBase(this)
-              .build();
+              .forceConnectionBase(this);
+      if (token!=null) {
+        builder = builder.token(token);
+      }
+      partnerConnection = builder.build();
     } catch (UnexpectedErrorFault unexpectedErrorFault) {
       throw new ForceException(unexpectedErrorFault);
     } catch (LoginFault loginFault) {

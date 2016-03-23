@@ -88,6 +88,9 @@ public class PartnerConnectionBuilder {
 
     CallOptions callOptions = ForceConnectionUtils.getCallOptions();
 
+    if (token==null) {
+      token = "";
+    }
     LoginResult loginResult = partnerConnection.login(user, password + token, loginScopeHeader, callOptions);
 
     if (forceConnectionBase!=null) {

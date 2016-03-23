@@ -36,6 +36,7 @@ public class ForceDriverTest {
   }
 
   @Test
+  @Ignore
   public void testConnectValid() throws SQLException {
     Properties properties = new Properties();
     properties.setProperty("user",user);

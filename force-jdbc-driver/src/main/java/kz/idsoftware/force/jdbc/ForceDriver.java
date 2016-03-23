@@ -9,6 +9,14 @@ import java.util.logging.Logger;
 
 public class ForceDriver implements java.sql.Driver {
 
+  static {
+    try {
+      java.sql.DriverManager.registerDriver(new ForceDriver());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
   private static final String USER = "user";
   private static final String PASSWORD = "password";
   private static final String TOKEN = "token";
@@ -37,6 +45,7 @@ public class ForceDriver implements java.sql.Driver {
    */
   @Override
   public boolean acceptsURL(String url) throws SQLException {
+    System.out.println("URL => "+url);
     if (url==null) {
       return false;
     }
@@ -60,7 +69,7 @@ public class ForceDriver implements java.sql.Driver {
 
   @Override
   public boolean jdbcCompliant() {
-    return false;
+    return true;
   }
 
   public Logger getParentLogger() throws SQLFeatureNotSupportedException {
